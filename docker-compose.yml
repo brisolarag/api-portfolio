@@ -1,0 +1,28 @@
+﻿networks:
+  web_network:
+    driver: bridge
+volumes: 
+  api-contact-volume:
+
+services: 
+  api:
+    container_name: api-contact
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 4652:8080
+    depends_on: ["api-sql"]
+    networks:
+      web_network:
+  api-sql:
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      - "ACCEPT_EULA=1"
+      - "MSSQL_SA_PASSWORD=Banc19o87"
+    volumes:
+      - "api-contact-volume:/var/opt/mssql"
+    networks:
+      web_network:
+        aliases:
+          - "sql"
